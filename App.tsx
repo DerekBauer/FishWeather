@@ -24,7 +24,9 @@ import {
   Waves,
   Zap,
   Waves as TidesIcon,
-  Activity
+  Activity,
+  Sunrise,
+  Sunset
 } from 'lucide-react';
 
 const App: React.FC = () => {
@@ -279,31 +281,62 @@ const App: React.FC = () => {
             </section>
 
             {/* Astronomical Events Grid */}
-            <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="glass p-6 rounded-2xl flex items-center justify-between hover:bg-slate-800/80 transition-all border-l-4 border-l-blue-500/40">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-400 shadow-[0_0_15px_rgba(59,130,246,0.1)]">
-                    <Sun className="w-6 h-6" />
+            <div className="space-y-4">
+              <h3 className="text-xs font-bold text-slate-500 uppercase tracking-widest border-b border-white/5 pb-2">Lunar & Solar Events</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Lunar Events */}
+                <div className="grid grid-cols-1 gap-4">
+                   <div className="glass p-6 rounded-2xl flex items-center justify-between hover:bg-slate-800/80 transition-all border-l-4 border-l-indigo-500/40">
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 rounded-full bg-indigo-500/10 flex items-center justify-center text-indigo-400 shadow-[0_0_15px_rgba(129,140,248,0.1)]">
+                        <Moon className="w-6 h-6" />
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-semibold text-slate-400 uppercase tracking-tighter">Moonrise</h4>
+                        <p className="text-2xl font-bold text-white tracking-tight">{data.moonData.moonrise}</p>
+                      </div>
+                    </div>
                   </div>
-                  <div>
-                    <h4 className="text-sm font-semibold text-slate-400 uppercase tracking-tighter">Moonrise</h4>
-                    <p className="text-2xl font-bold text-white tracking-tight">{data.moonData.moonrise}</p>
+                  <div className="glass p-6 rounded-2xl flex items-center justify-between hover:bg-slate-800/80 transition-all border-l-4 border-l-indigo-500/40">
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 rounded-full bg-indigo-500/10 flex items-center justify-center text-indigo-400 shadow-[0_0_15px_rgba(129,140,248,0.1)] opacity-70">
+                        <Moon className="w-6 h-6" />
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-semibold text-slate-400 uppercase tracking-tighter">Moonset</h4>
+                        <p className="text-2xl font-bold text-white tracking-tight">{data.moonData.moonset}</p>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <div className="glass p-6 rounded-2xl flex items-center justify-between hover:bg-slate-800/80 transition-all border-l-4 border-l-indigo-500/40">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-full bg-indigo-500/10 flex items-center justify-center text-indigo-400 shadow-[0_0_15px_rgba(129,140,248,0.1)]">
-                    <Moon className="w-6 h-6" />
+                {/* Solar Events */}
+                <div className="grid grid-cols-1 gap-4">
+                  <div className="glass p-6 rounded-2xl flex items-center justify-between hover:bg-slate-800/80 transition-all border-l-4 border-l-amber-500/40">
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 rounded-full bg-amber-500/10 flex items-center justify-center text-amber-400 shadow-[0_0_15px_rgba(245,158,11,0.1)]">
+                        <Sunrise className="w-6 h-6" />
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-semibold text-slate-400 uppercase tracking-tighter">Sunrise</h4>
+                        <p className="text-2xl font-bold text-white tracking-tight">{data.sunrise}</p>
+                      </div>
+                    </div>
                   </div>
-                  <div>
-                    <h4 className="text-sm font-semibold text-slate-400 uppercase tracking-tighter">Moonset</h4>
-                    <p className="text-2xl font-bold text-white tracking-tight">{data.moonData.moonset}</p>
+                  <div className="glass p-6 rounded-2xl flex items-center justify-between hover:bg-slate-800/80 transition-all border-l-4 border-l-orange-600/40">
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 rounded-full bg-orange-500/10 flex items-center justify-center text-orange-400 shadow-[0_0_15px_rgba(249,115,22,0.1)]">
+                        <Sunset className="w-6 h-6" />
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-semibold text-slate-400 uppercase tracking-tighter">Sunset</h4>
+                        <p className="text-2xl font-bold text-white tracking-tight">{data.sunset}</p>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-            </section>
+            </div>
 
             {/* Sources section */}
             {data.sources && data.sources.length > 0 && (

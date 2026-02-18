@@ -19,6 +19,8 @@ export interface WeatherData {
   };
   condition: string;
   timestamp: string;
+  sunrise: string;
+  sunset: string;
   moonData: {
     phase: string;
     illumination: number; // percentage

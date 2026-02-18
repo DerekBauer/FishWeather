@@ -15,17 +15,18 @@ export async function fetchWeatherAndMoonData(location: { lat?: number; lng?: nu
     1. Current temperature in Fahrenheit (°F), humidity in percentage (%), and barometric pressure in inches of mercury (inHg).
     2. Indicate if the barometric pressure is currently 'rising', 'falling', or 'steady' based on the most recent 3-hour trend.
     3. HISTORICAL PRESSURE DATA: Provide the approximate barometric pressure (inHg) from 2, 6, 12, and 24 hours ago for this specific location.
-    4. Precise moon data: current phase name, illumination percentage, azimuth (degrees), and altitude/elevation (degrees).
-    5. Today's moonrise and moonset times for this location.
-    6. Detailed Wind Data: Current sustained speed (mph), wind gust speed (mph), direction in degrees (0-359), and cardinal direction.
-    7. Solunar Fishing Activity: 
+    4. Today's sunrise and sunset times.
+    5. Precise moon data: current phase name, illumination percentage, azimuth (degrees), and altitude/elevation (degrees).
+    6. Today's moonrise and moonset times for this location.
+    7. Detailed Wind Data: Current sustained speed (mph), wind gust speed (mph), direction in degrees (0-359), and cardinal direction.
+    8. Solunar Fishing Activity: 
        - Major fishing periods (typically two 2-hour windows).
        - Minor fishing periods (typically two 1-hour windows).
        - An activity rating (e.g., "Excellent", "Good", "Fair", or "Poor") based on solunar theory for today.
-    8. Tide Data (ONLY if the location is coastal or near tidal water):
+    9. Tide Data (ONLY if the location is coastal or near tidal water):
        - Station name.
        - The next 4 tide events (High or Low) with their predicted times and heights in feet.
-    9. The human-readable city or location name.
+    10. The human-readable city or location name.
     
     Return the data strictly as a JSON object following this schema:
     {
@@ -41,6 +42,8 @@ export async function fetchWeatherAndMoonData(location: { lat?: number; lng?: nu
         "past24h": number
       },
       "condition": string,
+      "sunrise": string,
+      "sunset": string,
       "moonData": {
         "phase": string,
         "illumination": number,

@@ -16,11 +16,14 @@ export const MetricCard: React.FC<MetricCardProps> = ({ label, value, unit, icon
     if (!trend) return null;
     switch (trend) {
       case 'rising':
-        return <TrendingUp className="w-4 h-4 text-emerald-400" title="Rising" />;
+        // Fix: Removed title prop from TrendingUp as it's not a valid Lucide prop and wrapped in span with title for tooltip
+        return <span title="Rising"><TrendingUp className="w-4 h-4 text-emerald-400" /></span>;
       case 'falling':
-        return <TrendingDown className="w-4 h-4 text-rose-400" title="Falling" />;
+        // Fix: Removed title prop from TrendingDown as it's not a valid Lucide prop and wrapped in span with title for tooltip
+        return <span title="Falling"><TrendingDown className="w-4 h-4 text-rose-400" /></span>;
       case 'steady':
-        return <Minus className="w-4 h-4 text-slate-500" title="Steady" />;
+        // Fix: Removed title prop from Minus as it's not a valid Lucide prop and wrapped in span with title for tooltip
+        return <span title="Steady"><Minus className="w-4 h-4 text-slate-500" /></span>;
       default:
         return null;
     }
