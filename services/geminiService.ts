@@ -8,19 +8,24 @@ export async function fetchWeatherAndMoonData(location: { lat?: number; lng?: nu
   const locationQuery = location.zip ? `ZIP code ${location.zip}` : `coordinates ${location.lat}, ${location.lng}`;
   
   const prompt = `
-    Provide highly accurate current weather, moon position, and solunar fishing data for ${locationQuery}.
-    Use IMPERIAL units for all measurements.
+    Provide highly accurate current weather, wind, moon position, solunar fishing data, and coastal tide data for ${locationQuery}.
+    Use IMPERIAL units for all measurements (Fahrenheit, mph, inHg, feet).
     
     I specifically need:
     1. Current temperature in Fahrenheit (°F), humidity in percentage (%), and barometric pressure in inches of mercury (inHg).
-    2. Crucially, indicate if the barometric pressure is currently 'rising', 'falling', or 'steady' based on the most recent 3-hour trend.
+    2. Indicate if the barometric pressure is currently 'rising', 'falling', or 'steady' based on the most recent 3-hour trend.
     3. Precise moon data: current phase name, illumination percentage, azimuth (degrees), and altitude/elevation (degrees).
     4. Today's moonrise and moonset times for this location.
-    5. Solunar Fishing Activity: 
+    5. Detailed Wind Data: Current sustained speed (mph), wind gust speed (mph), direction in degrees (0-359), and cardinal direction.
+    6. Solunar Fishing Activity: 
        - Major fishing periods (typically two 2-hour windows).
        - Minor fishing periods (typically two 1-hour windows).
        - An activity rating (e.g., "Excellent", "Good", "Fair", or "Poor") based on solunar theory for today.
-    6. The human-readable city or location name.
+    7. Tide Data (ONLY if the location is coastal or near tidal water):
+       - Station name.
+       - The next 4 tide events (High or Low) with their predicted times and heights in feet.
+       - If the location is inland and has no tides, omit the tideData object or return null for it.
+    8. The human-readable city or location name.
     
     Return the data strictly as a JSON object following this schema:
     {
@@ -38,11 +43,23 @@ export async function fetchWeatherAndMoonData(location: { lat?: number; lng?: nu
         "moonrise": string,
         "moonset": string
       },
+      "windData": {
+        "speed": number,
+        "gust": number,
+        "direction": number,
+        "cardinal": string
+      },
       "fishingTimes": {
         "majors": string[],
         "minors": string[],
         "rating": string
-      }
+      },
+      "tideData": {
+        "station": string,
+        "events": [
+          { "type": "High" | "Low", "time": string, "height": string }
+        ]
+      } | null
     }
   `;
 

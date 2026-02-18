@@ -4,6 +4,9 @@ import { fetchWeatherAndMoonData } from './services/geminiService';
 import { WeatherData, GeolocationState } from './types';
 import { MetricCard } from './components/MetricCard';
 import { MoonVisual } from './components/MoonVisual';
+import { WindCompass } from './components/WindCompass';
+import { TideDisplay } from './components/TideDisplay';
+import { MoonSkyLocation } from './components/MoonSkyLocation';
 import { 
   Wind, 
   Droplets, 
@@ -17,7 +20,9 @@ import {
   RefreshCcw,
   ExternalLink,
   Fish,
-  Waves
+  Waves,
+  Zap,
+  Waves as TidesIcon
 } from 'lucide-react';
 
 const App: React.FC = () => {
@@ -135,107 +140,130 @@ const App: React.FC = () => {
       <main className="max-w-6xl mx-auto px-6 py-8">
         {loading && !data ? (
           <div className="flex flex-col items-center justify-center min-h-[50vh] gap-4">
-            <Loader2 className="w-12 h-12 text-indigo-500 animate-spin" />
-            <p className="text-slate-400 animate-pulse">Syncing with atmospheric sensors...</p>
+            <div className="relative">
+               <Loader2 className="w-16 h-16 text-indigo-500 animate-spin" />
+               <div className="absolute inset-0 flex items-center justify-center">
+                  <Moon className="w-6 h-6 text-indigo-400 animate-pulse" />
+               </div>
+            </div>
+            <p className="text-slate-400 animate-pulse font-medium tracking-wide">Calibrating with the cosmos...</p>
           </div>
         ) : error ? (
           <div className="bg-red-500/10 border border-red-500/20 p-6 rounded-2xl text-center">
-            <p className="text-red-400 mb-4">{error}</p>
+            <p className="text-red-400 mb-4 font-medium">{error}</p>
             <button 
               onClick={handleGetCurrentLocation}
-              className="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-full text-sm font-medium transition-colors"
+              className="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-full text-sm font-bold transition-colors shadow-lg shadow-red-500/20"
             >
               Try Again
             </button>
           </div>
         ) : data && (
           <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-            <section className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
-              <div>
+            {/* Top Info Section */}
+            <section className="flex flex-col lg:flex-row justify-between items-start lg:items-stretch gap-8">
+              <div className="flex-1 flex flex-col justify-center">
                 <div className="flex items-center gap-2 text-indigo-400 mb-1">
                   <MapPin className="w-4 h-4" />
                   <span className="text-sm font-medium uppercase tracking-wider">{data.locationName}</span>
                 </div>
-                <h2 className="text-5xl font-bold tracking-tight text-white mb-2">
-                  {data.temperature}°<span className="text-3xl text-slate-500">F</span>
+                <h2 className="text-6xl font-bold tracking-tight text-white mb-2">
+                  {data.temperature}°<span className="text-4xl text-slate-500 font-light">F</span>
                 </h2>
                 <div className="flex items-center gap-3">
-                  <span className="px-3 py-1 bg-white/5 rounded-full text-sm border border-white/10">{data.condition}</span>
-                  <span className="text-slate-500 text-sm">Last updated: {data.timestamp}</span>
+                  <span className="px-4 py-1.5 bg-indigo-500/10 rounded-full text-sm border border-indigo-500/20 text-indigo-200 font-bold">
+                    {data.condition}
+                  </span>
+                  <span className="text-slate-500 text-sm font-mono tracking-tighter">Update: {data.timestamp}</span>
                 </div>
               </div>
               
-              <div className="w-full md:w-auto">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
                 <MoonVisual phase={data.moonData.phase} illumination={data.moonData.illumination} />
+                <MoonSkyLocation azimuth={data.moonData.azimuth} altitude={data.moonData.altitude} />
+                <WindCompass 
+                  direction={data.windData.direction} 
+                  cardinal={data.windData.cardinal} 
+                  speed={data.windData.speed} 
+                  gust={data.windData.gust} 
+                />
               </div>
             </section>
 
+            {/* Coastal Tides Section */}
+            {data.tideData && (
+              <section className="animate-in fade-in duration-1000">
+                <TideDisplay station={data.tideData.station} events={data.tideData.events} />
+              </section>
+            )}
+
+            {/* Core Metrics Grid */}
             <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <MetricCard 
-                label="Pressure" 
+                label="Barometric Pressure" 
                 value={data.pressure} 
                 unit="inHg" 
                 trend={data.pressureTrend}
                 icon={<Wind className="w-5 h-5" />} 
-                description="Atmospheric weight (inches of mercury)."
+                description="Weight of atmospheric column."
               />
               <MetricCard 
                 label="Humidity" 
                 value={data.humidity} 
                 unit="%" 
                 icon={<Droplets className="w-5 h-5" />} 
-                description="Concentration of water vapor."
+                description="Air water vapor concentration."
               />
               <MetricCard 
-                label="Moon Azimuth" 
-                value={data.moonData.azimuth} 
-                unit="°" 
-                icon={<Compass className="w-5 h-5" />} 
-                description="Horizontal angular distance."
+                label="Wind Gusts" 
+                value={data.windData.gust} 
+                unit="mph" 
+                icon={<Zap className="w-5 h-5" />} 
+                description="Peak short-duration wind speed."
               />
               <MetricCard 
-                label="Moon Altitude" 
-                value={data.moonData.altitude} 
-                unit="°" 
-                icon={<Navigation className="w-5 h-5" />} 
-                description="Vertical angle above horizon."
+                label="Moon Illumination" 
+                value={data.moonData.illumination} 
+                unit="%" 
+                icon={<Moon className="w-5 h-5" />} 
+                description="Percentage of moon visible."
               />
             </section>
 
-            {/* Solunar / Fishing Activity Section */}
+            {/* Solunar Activity Section */}
             <section className="space-y-4">
               <div className="flex items-center justify-between border-b border-white/5 pb-2">
                 <div className="flex items-center gap-2">
                   <Fish className="w-5 h-5 text-emerald-400" />
-                  <h3 className="text-lg font-bold text-white uppercase tracking-tight">Solunar Fishing Activity</h3>
+                  <h3 className="text-lg font-bold text-white uppercase tracking-tight">Solunar Fishing Forecast</h3>
                 </div>
                 <div className={`px-4 py-1 rounded-full border text-xs font-bold uppercase tracking-widest ${getRatingColor(data.fishingTimes.rating)}`}>
-                  {data.fishingTimes.rating} Rating
+                  {data.fishingTimes.rating}
                 </div>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="glass p-5 rounded-2xl">
                   <h4 className="text-sm font-semibold text-emerald-400 uppercase tracking-tighter mb-4 flex items-center gap-2">
-                    <Waves className="w-4 h-4" /> Major Periods
+                    <Waves className="w-4 h-4" /> Major Feed Periods
                   </h4>
                   <div className="space-y-2">
                     {data.fishingTimes.majors.map((time, i) => (
                       <div key={i} className="flex justify-between items-center py-2 border-b border-white/5 last:border-0">
-                        <span className="text-slate-400 text-sm">Period {i + 1}</span>
-                        <span className="text-white font-mono font-bold">{time}</span>
+                        <span className="text-slate-400 text-sm font-medium">Window {i + 1}</span>
+                        <span className="text-white font-mono font-bold tracking-wider">{time}</span>
                       </div>
                     ))}
                   </div>
                 </div>
                 <div className="glass p-5 rounded-2xl">
                   <h4 className="text-sm font-semibold text-teal-400 uppercase tracking-tighter mb-4 flex items-center gap-2">
-                    <Waves className="w-4 h-4 opacity-70" /> Minor Periods
+                    <Waves className="w-4 h-4 opacity-70" /> Minor Feed Periods
                   </h4>
                   <div className="space-y-2">
                     {data.fishingTimes.minors.map((time, i) => (
                       <div key={i} className="flex justify-between items-center py-2 border-b border-white/5 last:border-0">
-                        <span className="text-slate-400 text-sm">Period {i + 1}</span>
-                        <span className="text-white font-mono font-bold">{time}</span>
+                        <span className="text-slate-400 text-sm font-medium">Window {i + 1}</span>
+                        <span className="text-white font-mono font-bold tracking-wider">{time}</span>
                       </div>
                     ))}
                   </div>
@@ -243,36 +271,38 @@ const App: React.FC = () => {
               </div>
             </section>
 
+            {/* Astronomical Events Grid */}
             <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="glass p-6 rounded-2xl flex items-center justify-between">
+              <div className="glass p-6 rounded-2xl flex items-center justify-between hover:bg-slate-800/80 transition-all border-l-4 border-l-blue-500/40">
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-400">
+                  <div className="w-12 h-12 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-400 shadow-[0_0_15px_rgba(59,130,246,0.1)]">
                     <Sun className="w-6 h-6" />
                   </div>
                   <div>
                     <h4 className="text-sm font-semibold text-slate-400 uppercase tracking-tighter">Moonrise</h4>
-                    <p className="text-2xl font-bold text-white">{data.moonData.moonrise}</p>
+                    <p className="text-2xl font-bold text-white tracking-tight">{data.moonData.moonrise}</p>
                   </div>
                 </div>
               </div>
 
-              <div className="glass p-6 rounded-2xl flex items-center justify-between">
+              <div className="glass p-6 rounded-2xl flex items-center justify-between hover:bg-slate-800/80 transition-all border-l-4 border-l-indigo-500/40">
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-full bg-indigo-500/10 flex items-center justify-center text-indigo-400">
+                  <div className="w-12 h-12 rounded-full bg-indigo-500/10 flex items-center justify-center text-indigo-400 shadow-[0_0_15px_rgba(129,140,248,0.1)]">
                     <Moon className="w-6 h-6" />
                   </div>
                   <div>
                     <h4 className="text-sm font-semibold text-slate-400 uppercase tracking-tighter">Moonset</h4>
-                    <p className="text-2xl font-bold text-white">{data.moonData.moonset}</p>
+                    <p className="text-2xl font-bold text-white tracking-tight">{data.moonData.moonset}</p>
                   </div>
                 </div>
               </div>
             </section>
 
+            {/* Sources section */}
             {data.sources && data.sources.length > 0 && (
               <section className="pt-8 border-t border-white/5">
-                <h5 className="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-4 flex items-center gap-2">
-                  <ExternalLink className="w-3 h-3" /> Verify Search Sources
+                <h5 className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-4 flex items-center gap-2 opacity-60">
+                  <ExternalLink className="w-3 h-3" /> Data Verification Grounding
                 </h5>
                 <div className="flex flex-wrap gap-2">
                   {data.sources.map((source, i) => (
@@ -281,9 +311,9 @@ const App: React.FC = () => {
                       href={source.uri} 
                       target="_blank" 
                       rel="noopener noreferrer"
-                      className="text-xs px-3 py-1.5 bg-slate-900 border border-white/5 rounded-lg hover:border-indigo-500/50 hover:text-indigo-400 transition-all flex items-center gap-2"
+                      className="text-[10px] px-3 py-1.5 bg-slate-900 border border-white/5 rounded-lg hover:border-indigo-500/50 hover:text-indigo-400 transition-all flex items-center gap-2 font-bold tracking-tight"
                     >
-                      {source.title.slice(0, 30)}...
+                      {source.title.length > 30 ? source.title.slice(0, 30) + '...' : source.title}
                     </a>
                   ))}
                 </div>
@@ -293,9 +323,9 @@ const App: React.FC = () => {
         )}
       </main>
 
-      <footer className="fixed bottom-0 left-0 right-0 glass border-t border-white/5 py-4 text-center">
-        <p className="text-[10px] text-slate-500 uppercase tracking-widest">
-          Powered by Gemini 3 Flash & Search Grounding
+      <footer className="fixed bottom-0 left-0 right-0 glass border-t border-white/5 py-4 text-center z-50">
+        <p className="text-[10px] text-slate-500 uppercase tracking-widest font-black">
+          Precision Weather Analysis • Powered by Gemini 3 Flash
         </p>
       </footer>
     </div>

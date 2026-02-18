@@ -1,4 +1,10 @@
 
+export interface TideEvent {
+  type: 'High' | 'Low';
+  time: string;
+  height: string;
+}
+
 export interface WeatherData {
   locationName: string;
   temperature: number; // in Fahrenheit
@@ -15,10 +21,20 @@ export interface WeatherData {
     moonrise: string;
     moonset: string;
   };
+  windData: {
+    speed: number; // mph
+    gust: number; // mph
+    direction: number; // degrees
+    cardinal: string; // e.g., "NNE"
+  };
   fishingTimes: {
     majors: string[]; // List of major activity periods
     minors: string[]; // List of minor activity periods
     rating: string; // Excellent, Good, Fair, Poor
+  };
+  tideData?: {
+    station: string;
+    events: TideEvent[];
   };
   sources: Array<{ title: string; uri: string }>;
 }
