@@ -11,6 +11,12 @@ export interface WeatherData {
   humidity: number; // percentage
   pressure: number; // in inHg (inches of mercury)
   pressureTrend: 'rising' | 'falling' | 'steady';
+  pressureHistory: {
+    past2h: number;
+    past6h: number;
+    past12h: number;
+    past24h: number;
+  };
   condition: string;
   timestamp: string;
   moonData: {

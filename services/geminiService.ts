@@ -14,18 +14,18 @@ export async function fetchWeatherAndMoonData(location: { lat?: number; lng?: nu
     I specifically need:
     1. Current temperature in Fahrenheit (°F), humidity in percentage (%), and barometric pressure in inches of mercury (inHg).
     2. Indicate if the barometric pressure is currently 'rising', 'falling', or 'steady' based on the most recent 3-hour trend.
-    3. Precise moon data: current phase name, illumination percentage, azimuth (degrees), and altitude/elevation (degrees).
-    4. Today's moonrise and moonset times for this location.
-    5. Detailed Wind Data: Current sustained speed (mph), wind gust speed (mph), direction in degrees (0-359), and cardinal direction.
-    6. Solunar Fishing Activity: 
+    3. HISTORICAL PRESSURE DATA: Provide the approximate barometric pressure (inHg) from 2, 6, 12, and 24 hours ago for this specific location.
+    4. Precise moon data: current phase name, illumination percentage, azimuth (degrees), and altitude/elevation (degrees).
+    5. Today's moonrise and moonset times for this location.
+    6. Detailed Wind Data: Current sustained speed (mph), wind gust speed (mph), direction in degrees (0-359), and cardinal direction.
+    7. Solunar Fishing Activity: 
        - Major fishing periods (typically two 2-hour windows).
        - Minor fishing periods (typically two 1-hour windows).
        - An activity rating (e.g., "Excellent", "Good", "Fair", or "Poor") based on solunar theory for today.
-    7. Tide Data (ONLY if the location is coastal or near tidal water):
+    8. Tide Data (ONLY if the location is coastal or near tidal water):
        - Station name.
        - The next 4 tide events (High or Low) with their predicted times and heights in feet.
-       - If the location is inland and has no tides, omit the tideData object or return null for it.
-    8. The human-readable city or location name.
+    9. The human-readable city or location name.
     
     Return the data strictly as a JSON object following this schema:
     {
@@ -34,6 +34,12 @@ export async function fetchWeatherAndMoonData(location: { lat?: number; lng?: nu
       "humidity": number,
       "pressure": number,
       "pressureTrend": "rising" | "falling" | "steady",
+      "pressureHistory": {
+        "past2h": number,
+        "past6h": number,
+        "past12h": number,
+        "past24h": number
+      },
       "condition": string,
       "moonData": {
         "phase": string,

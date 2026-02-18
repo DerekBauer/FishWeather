@@ -7,6 +7,7 @@ import { MoonVisual } from './components/MoonVisual';
 import { WindCompass } from './components/WindCompass';
 import { TideDisplay } from './components/TideDisplay';
 import { MoonSkyLocation } from './components/MoonSkyLocation';
+import { PressureHistory } from './components/PressureHistory';
 import { 
   Wind, 
   Droplets, 
@@ -22,7 +23,8 @@ import {
   Fish,
   Waves,
   Zap,
-  Waves as TidesIcon
+  Waves as TidesIcon,
+  Activity
 } from 'lucide-react';
 
 const App: React.FC = () => {
@@ -197,37 +199,42 @@ const App: React.FC = () => {
               </section>
             )}
 
-            {/* Core Metrics Grid */}
-            <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              <MetricCard 
-                label="Barometric Pressure" 
-                value={data.pressure} 
-                unit="inHg" 
-                trend={data.pressureTrend}
-                icon={<Wind className="w-5 h-5" />} 
-                description="Weight of atmospheric column."
-              />
-              <MetricCard 
-                label="Humidity" 
-                value={data.humidity} 
-                unit="%" 
-                icon={<Droplets className="w-5 h-5" />} 
-                description="Air water vapor concentration."
-              />
-              <MetricCard 
-                label="Wind Gusts" 
-                value={data.windData.gust} 
-                unit="mph" 
-                icon={<Zap className="w-5 h-5" />} 
-                description="Peak short-duration wind speed."
-              />
-              <MetricCard 
-                label="Moon Illumination" 
-                value={data.moonData.illumination} 
-                unit="%" 
-                icon={<Moon className="w-5 h-5" />} 
-                description="Percentage of moon visible."
-              />
+            {/* Pressure History & Core Metrics Grid */}
+            <section className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <MetricCard 
+                  label="Barometric Pressure" 
+                  value={data.pressure} 
+                  unit="inHg" 
+                  trend={data.pressureTrend}
+                  icon={<Activity className="w-5 h-5" />} 
+                  description="Weight of atmospheric column."
+                />
+                <MetricCard 
+                  label="Humidity" 
+                  value={data.humidity} 
+                  unit="%" 
+                  icon={<Droplets className="w-5 h-5" />} 
+                  description="Air water vapor concentration."
+                />
+                <MetricCard 
+                  label="Wind Gusts" 
+                  value={data.windData.gust} 
+                  unit="mph" 
+                  icon={<Zap className="w-5 h-5" />} 
+                  description="Peak short-duration wind speed."
+                />
+                <MetricCard 
+                  label="Moon Illumination" 
+                  value={data.moonData.illumination} 
+                  unit="%" 
+                  icon={<Moon className="w-5 h-5" />} 
+                  description="Percentage of moon visible."
+                />
+              </div>
+              <div>
+                <PressureHistory current={data.pressure} history={data.pressureHistory} />
+              </div>
             </section>
 
             {/* Solunar Activity Section */}
