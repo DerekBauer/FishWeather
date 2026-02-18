@@ -1,0 +1,7 @@
+{
+  "name": "FishingWeatherInsights",
+  "description": "A sophisticated weather dashboard providing real-time barometric pressure, humidity, and detailed astronomical data including moon position and phases using Gemini Search Grounding.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
